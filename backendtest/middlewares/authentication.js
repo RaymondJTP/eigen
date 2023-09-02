@@ -6,7 +6,7 @@ const authentication = async (req, res, next) => {
         const {access_token} = req.headers;
 
         if (!access_token) {
-            console.log('tidak ada access token');
+            throw ({name: 'invalidlogin', message: 'silahkan login terlebih dahulu untuk mendapatkan access token'})
         }
 
         const tokenPayload = verifyToken(access_token);
@@ -17,7 +17,7 @@ const authentication = async (req, res, next) => {
         });
 
         if (!getMember) {
-            console.log('tidak terauntentikasi');
+            throw{name: 'unauthentication'}
         }
 
         req.user = {
@@ -28,7 +28,7 @@ const authentication = async (req, res, next) => {
         next()
 
     } catch (error) {
-        console.log(error, 'authentication 31');
+        next(error);
     }
 }
 
