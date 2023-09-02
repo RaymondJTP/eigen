@@ -15,8 +15,8 @@ class Controller{
         try {
             const{name, password} = req.body;
             let newCode = '';
-            if(!password){
-                console.log('harus ada code dan password');
+            if(!name || !password){
+                throw ({name: 'badrequest', message: 'nama dan password tidak boleh kosong'});
             }
 
             const findUser = await Member.findOne({
@@ -25,8 +25,7 @@ class Controller{
                 }
             });
             if(findUser){
-                console.log('data sudah ada silahkan login menggunakan code');
-                // throw ({name: 'unique', message: 'code has been registered, please try login'});
+                throw ({name: 'badrequest', message: 'nama sudah terdaftar, silahkan login dengan nama tersebut atau register menggunakan nama lain'});
             };
             const findAllUser = await Member.findAll();
             if(findAllUser.length > 0) {
@@ -50,15 +49,44 @@ class Controller{
             );
             res.status(201).json(result);
         } catch (error) {
-            console.log(error);
+            next(error);
         }
     }
 
     static async loginMember(req, res, next) {
         try {
-            
+            const { code, password } = req.body;
+
+            if (!code || !password ) {
+                throw ({name: 'badrequest', message: 'nama dan password tidak boleh kosong'});
+            }
+
+            //  mencari data member sesuai code
+            const findMember = await Member.findOne({
+                where : {
+                    code
+                },
+            });
+
+            //  jika tidak ditemukan data member
+            if( !findMember ) {
+                throw ({name: 'notfound', message: `akun member dengan code ${code} tidak ditemukan`});
+            }
+
+            //  jika ada
+            let isValidPassword = comparePassword(password, findMember.password);
+
+            //  jika password tidak valid
+            if (!isValidPassword) {
+                throw ({name: 'invalidlogin', message: `password anda salah`});
+            }
+
+            //  jika valid 
+            let tokenPayLoad = {id: findMember.id, code: findMember.code};
+            let access_token = signToken(tokenPayLoad);
+            res.status(200).json({message: 'Login Success', access_token, findMember});
         } catch (error) {
-            
+            next(error);
         }
     }
 }
