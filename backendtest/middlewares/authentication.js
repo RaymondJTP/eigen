@@ -22,7 +22,8 @@ const authentication = async (req, res, next) => {
 
         req.user = {
             id: getMember.id,
-            code: getMember.id
+            code: getMember.code,
+            totalBookBorrowed: getMember.bookBorrowed
         }
 
         next()

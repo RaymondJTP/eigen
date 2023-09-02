@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     code: DataTypes.STRING,
     name: DataTypes.STRING,
     password: DataTypes.STRING,
+    isPenalized: DataTypes.BOOLEAN,
+    bookBorrowed: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Member',

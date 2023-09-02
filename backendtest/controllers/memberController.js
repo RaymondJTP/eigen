@@ -5,9 +5,16 @@ const {comparePassword}= require('../helpers/bcrypt')
 class Controller{
     static async getListMember(req, res, next) {
         try {
-            
+            const result = await Member.findAll({
+                where: {
+                    isPenalized: false
+                },
+                attributes: {exclude: ['createdAt', 'updatedAt']},
+            })
+
+            res.status(200).json(result);
         } catch (error) {
-            
+            next(error)
         }
     }
 

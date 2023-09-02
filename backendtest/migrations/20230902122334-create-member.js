@@ -18,6 +18,14 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      isPenalized: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      bookBorrowed: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
