@@ -2,17 +2,15 @@ const { Member } = require('../models');
 const {signToken} = require('../helpers/jwt');
 const {comparePassword}= require('../helpers/bcrypt')
 
+
 class Controller{
     static async getListMember(req, res, next) {
         try {
             const result = await Member.findAll({
-                where: {
-                    isPenalized: false
-                },
                 attributes: {exclude: ['createdAt', 'updatedAt']},
             })
 
-            res.status(200).json(result);
+            res.status(200).json({data: result});
         } catch (error) {
             next(error)
         }
@@ -54,7 +52,7 @@ class Controller{
                     password,
                 }
             );
-            res.status(201).json(result);
+            res.status(201).json({message: 'berhasil mendaftar member', data: result});
         } catch (error) {
             next(error);
         }
@@ -87,10 +85,28 @@ class Controller{
             if (!isValidPassword) {
                 throw ({name: 'invalidlogin', message: `password anda salah`});
             }
-
-            //  jika valid 
             let tokenPayLoad = {id: findMember.id, code: findMember.code};
             let access_token = signToken(tokenPayLoad);
+
+            if (findMember.isPenalized === true) {
+                //  cari angka hari ini
+                let thisDate = new Date();
+                let dayThisDate = thisDate.getDate();
+
+                //  cari angka hari kena penalti
+                let returnDate = new Date(findMember.penaltyDate)
+                let dayReturnDate = returnDate.getDate();
+
+                if (dayThisDate - dayReturnDate > 3) {
+                    await Member.update(
+                        {   isPenalized: false, penaltyDate: null}
+                    )
+                    res.status(200).json({message: 'Login Success', access_token, findMember});
+
+                }
+                res.status(200).json({message: 'Login Success', access_token, findMember});
+            }
+            //  jika valid 
             res.status(200).json({message: 'Login Success', access_token, findMember});
         } catch (error) {
             next(error);

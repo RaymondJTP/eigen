@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     password: DataTypes.STRING,
     isPenalized: DataTypes.BOOLEAN,
+    penaltyDate: DataTypes.DATE,
     bookBorrowed: DataTypes.INTEGER
   }, {
     sequelize,

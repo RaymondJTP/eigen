@@ -30,6 +30,9 @@ class Controller{
         try {
             const {id, totalBookBorrowed} = req.user;
             const { borrowDate, bookCode } = req.body;
+            if(!borrowDate || !bookCode) {
+                throw ({name: 'badrequest', message: 'silahkan isi tanggal peminjaman dan code buku'})
+            }
             const borrowDateFormat = convertToLocal(borrowDate);
             const findMemberBorrow = await Member.findOne({
                 where: {
@@ -59,15 +62,20 @@ class Controller{
             if (!findBook) {
                 throw ({name: 'notfound', message: `buku dengan code ${bookCode} tidak ditemukan di database kami`});
             }
+
+            if (findBook.stock == 0) {
+                throw ({name: 'badrequest', message: `stock buku dengan code ${bookCode} sudah habis, silahkan pilih buku lainnya`})
+            }
             
             const findBorrowedBook = await BookBorrowed.findOne({
                 where: {
-                    idBook: findBook.id
+                    idBook: findBook.id,
+                    idMember: id
                 }
             });
 
             if (findBorrowedBook) {
-                throw ({name: 'badrequest', message: `buku dengan code ${bookCode} sudah dipinjam member, silahkan masukkan code buku lain`})
+                throw ({name: 'badrequest', message: `buku dengan code ${bookCode} sudah anda pinjam, silahkan masukkan code buku lain`})
             }
 
             const result = await sequelize.transaction(async (t) => {
@@ -107,11 +115,18 @@ class Controller{
             const {id, totalBookBorrowed} = req.user;
             const {returnDate, bookCode} = req.body;
             let dayOfReturning = '';
+            if (!returnDate || !bookCode) {
+                throw ({name: 'badrequest', message: 'masukkan tanggal pengembalian buku dan code buku'})
+            }
             const findBook = await Book.findOne({
                 where: {
                     code: bookCode
                 }
             })
+
+            if (!findBook) {
+                throw ({name: 'notfound', message:  `buku dengan code ${bookCode} tidak ditemukan`})
+            }
             const findBorrowedBook = await BookBorrowed.findOne({
                 where: {
                     idMember: id,
@@ -163,7 +178,7 @@ class Controller{
 
                 if (returnGap > 7) {
                     await Member.update(
-                        {   isPenalized: true   },
+                        {   isPenalized: true, penaltyDate: todayFormat  },
                         {   where: {
                                 id
                             },

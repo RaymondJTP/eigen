@@ -1,0 +1,43 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Test Backend Eigen",
+        "description": "Dokumentasi API Backend Test Eigen",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "decription": "url development"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Member",
+            "description": "List API yang berhubungan dengan member"
+        },
+        {
+            "name": "Book",
+            "description": "List API yang berhubungan dengan buku"
+        }
+    ],
+    "paths": {
+        "/member/list": {
+            "get": {
+                "tags": [
+                    "Member"
+                ],
+                "summary": "Get List Member",
+                "description": "Mendapatkan list member",
+                "response": {
+                    "200": {
+                        "description": "Sukses"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        }
+    }
+}

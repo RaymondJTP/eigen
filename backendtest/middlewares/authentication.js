@@ -3,6 +3,9 @@ const {verifyToken} = require('../helpers/jwt')
 
 const authentication = async (req, res, next) => {
     try {
+        if (req.originalUrl.includes('/api-docs')) {
+            next();
+        }
         const {access_token} = req.headers;
 
         if (!access_token) {
