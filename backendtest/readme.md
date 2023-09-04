@@ -18,11 +18,10 @@ List of available endpoints:
 
 - `POST /member/register`
 - `POST /member/login`
-- `GET /member/list`
-- `POST /products`
-- `POST /products/:id`
-- `POST /products/:id/payment`
-- `GET /history`
+- `GET /member`
+- `GET /books`
+- `POST /books/borrow`
+- `POST /books/return`
 
 
 &nbsp;
@@ -187,9 +186,16 @@ _Response (500 - Bad Request)_
 ## 4. GET /books
 
 Description : Get All books from database. Setiap buku yang masih ada stoknya akan ditampilkan.
-http://localhost:3000/books
+http://localhost:3000/books?titleKeyword=`masukkan keyword title buku (optional)`
 
 Request:
+
+_query params_
+```json
+{
+  "titleKeyword" :  "masukkan keyword title buku" //optional dapat diisi ataupun tidak
+}
+```
 
 _header_
 ```json

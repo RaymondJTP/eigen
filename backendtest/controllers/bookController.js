@@ -140,12 +140,13 @@ class Controller{
             //  mencari tanggal hari ini
             let borrowDateFormat = new Date(findBorrowedBook.borrowDate);
             let dayBorrow = borrowDateFormat.getDate();
-            
+            let returnDateResult
             let todayFormat = new Date();
             let dayToday = todayFormat.getDate();
-            
+            returnDateResult = todayFormat;
             if (dayToday === dayBorrow) {
                 let returnFormat = new Date(returnDate);
+                returnDateResult = returnFormat
                 let dayReturnFormat = returnFormat.getDate();
                 dayOfReturning = dayReturnFormat;
             }
@@ -178,7 +179,7 @@ class Controller{
 
                 if (returnGap > 7) {
                     await Member.update(
-                        {   isPenalized: true, penaltyDate: todayFormat  },
+                        {   isPenalized: true, penaltyDate: returnDateResult  },
                         {   where: {
                                 id
                             },
