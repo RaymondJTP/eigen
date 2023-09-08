@@ -11,6 +11,7 @@
  - Jika command sequelize terdapat eror, bisa gunakan npm install --save sequelize bisa hubungi saya kembali
  - Command nodemon untuk melakukan akses ke server
  - Pada sistem yang saya buat, saya menggunakan authentication oleh karena itu harus dilakukan registrasi member dan login terlebih dahulu untuk dapat mengakses endpoint book.
+ - Setelah menjalankan nodemon, silahkan buka browser http://localhost:3000/api-docs untuk melihat dokumentasi API yang dibuat menggunakan swagger. Namun penjelasan API juga dapat dilihat pula pada read me ini.
 
 ## Endpoints :
 

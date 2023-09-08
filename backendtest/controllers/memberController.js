@@ -4,6 +4,16 @@ const {comparePassword}= require('../helpers/bcrypt')
 
 
 class Controller{
+    /**
+     * @swagger
+     * /member:
+     *      get:
+     *          tags: [Member]
+     *          description: Gett All Members
+     *          responses:
+     *              200:
+     *                  description: SUCCESS
+     */
     static async getListMember(req, res, next) {
         try {
             const result = await Member.findAll({
@@ -15,7 +25,36 @@ class Controller{
             next(error)
         }
     }
-
+    /**
+     * @swagger
+     * /member/register:
+     *      post:
+     *          tags: [Member]
+     *          description: Mendaftarkan member baru
+     *          requestBody:
+     *              required: true
+     *              content:
+     *                  application/json:
+     *                      schema:
+     *                          type: object
+     *                          properties:
+     *                              name:
+     *                                  type: string
+     *                                  description: nama akun member
+     *                                  example: raymond
+     *                              password:
+     *                                  type: string
+     *                                  desription: password untuk login
+     *                                  example: inipassword
+     *      
+     *          responses:
+     *              201:
+     *                  description: SUCCESS CREATE
+     *              400:
+     *                  description: BAD REQUEST
+     *              500:
+     *                  description: Invalid Server Error
+     */
     static async registerMember(req, res, next) {
         try {
             const{name, password} = req.body;
@@ -58,6 +97,38 @@ class Controller{
         }
     }
 
+    /**
+     * @swagger
+     * /member/login:
+     *      post:
+     *          tags: [Member]
+     *          description: Login member
+     *          requestBody:
+     *              required: true
+     *              content:
+     *                  application/json:
+     *                      schema:
+     *                          type: object
+     *                          properties:
+     *                              code:
+     *                                  type: string
+     *                                  description: code akun member yang diberikan saat register
+     *                                  example: M002
+     *                              password:
+     *                                  type: string
+     *                                  desription: password untuk login
+     *                                  example: passwordraymond
+     *      
+     *          responses:
+     *              201:
+     *                  description: SUCCESS CREATE
+     *              400:
+     *                  description: BAD REQUEST
+     *              404:
+     *                  description: NOT FOUND
+     *              500:
+     *                  description: Invalid Server Error
+     */
     static async loginMember(req, res, next) {
         try {
             const { code, password } = req.body;

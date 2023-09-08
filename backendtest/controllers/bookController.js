@@ -5,6 +5,24 @@ const {sequelize} = require('../models')
 const { convertToLocal } = require('../helpers/dateFormat')
 
 class Controller{
+    /**
+     * @swagger
+     * /books:
+     *      get:
+     *          tags: [Books]
+     *          description: Get All Books
+     *          security:
+     *              - access_token: []
+     *          parameters:
+     *              - in: query
+     *                name: titleKeyword
+     *                schema:
+     *                  type: string
+     *                description: mencari buku berdasarkan nama buku, dapat dikosongkan jika ingin melihat semua list buku
+     *          responses:
+     *              200:
+     *                  description: SUCCESS
+     */
     static async getBooks(req, res, next) {
         try {
             const { titleKeyword } = req.query;
@@ -21,11 +39,43 @@ class Controller{
 
             return res.status(200).json(findBooks);
         } catch (error) {
-            console.log(error);
             next(error);
         }
     }
-
+    /**
+     * @swagger
+     * /books/borrow:
+     *      post:
+     *          tags: [Books]
+     *          description: Meminjam buku
+     *          security:
+     *              - access_token: []
+     *          requestBody:
+     *              required: true
+     *              content:
+     *                  application/json:
+     *                      schema:
+     *                          type: object
+     *                          properties:
+     *                              borrowDate:
+     *                                  type: string
+     *                                  description: format harus yyyy-mm-dd hh:MM:ss
+     *                                  example: 2023-09-08 02:13:35
+     *                              bookCode:
+     *                                  type: string
+     *                                  desription: code buku, dapat dilihat  di list buku
+     *                                  example: LKS-1
+     *      
+     *          responses:
+     *              201:
+     *                  description: SUCCESS CREATE
+     *              400:
+     *                  description: BAD REQUEST
+     *              404:
+     *                  description: NOT FOUND
+     *              500:
+     *                  description: Invalid Server Error
+     */
     static async borrowBook(req, res, next) {
         try {
             const {id, totalBookBorrowed} = req.user;
@@ -110,6 +160,40 @@ class Controller{
         }
     }
 
+    /**
+     * @swagger
+     * /books/return:
+     *      post:
+     *          tags: [Books]
+     *          description: Balikin buku buku
+     *          security:
+     *              - access_token: []
+     *          requestBody:
+     *              required: true
+     *              content:
+     *                  application/json:
+     *                      schema:
+     *                          type: object
+     *                          properties:
+     *                              returnDate:
+     *                                  type: string
+     *                                  description: format harus yyyy-mm-dd hh:MM:ss
+     *                                  example: 2023-09-08 02:13:35
+     *                              bookCode:
+     *                                  type: string
+     *                                  desription: code buku, dapat dilihat  di list buku
+     *                                  example: LKS-1
+     *      
+     *          responses:
+     *              201:
+     *                  description: SUCCESS CREATE
+     *              400:
+     *                  description: BAD REQUEST
+     *              404:
+     *                  description: NOT FOUND
+     *              500:
+     *                  description: Invalid Server Error
+     */
     static async returnBook(req, res, next) {
         try {
             const {id, totalBookBorrowed} = req.user;
